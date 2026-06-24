@@ -1,149 +1,183 @@
-Facial Expression Detection using EfficientNetB0 (FER2013)
+# Facial Expression Detection using EfficientNetB0 (FER2013)
 
-This project implements a deep-learning facial expression classification model trained on the FER2013 dataset.
-It uses TensorFlow, EfficientNetB0, and a fully memory-safe pixel parser to process the dataset.
-The model predicts one of seven emotions from static face images: Angry, Disgust, Fear, Happy, Sad, Surprise, and Neutral.
+## Overview
 
-Features
+This project implements a deep learning-based facial expression classification system trained on the FER2013 dataset. It uses TensorFlow and EfficientNetB0 as the backbone model to classify facial expressions from static images.
 
-Clean TensorFlow-only pipeline without py_function.
+The model predicts one of seven emotion classes:
+Angry, Disgust, Fear, Happy, Sad, Surprise, and Neutral.
 
-EfficientNetB0 backbone with multi-stage training (frozen and fine-tuning).
+The system is designed for efficient training, clean preprocessing, and reliable inference on local systems.
 
-Fully compatible with VS Code and local execution.
+---
 
-Supports inference on any image.
+## Features
 
-Optional Haarcascade-based face detection during inference.
+* Deep learning pipeline using TensorFlow and EfficientNetB0
+* FER2013 dataset-based emotion classification
+* Multi-stage training (feature extraction and fine-tuning)
+* Fully local execution compatible with VS Code
+* Image-based inference support
+* Optional Haarcascade-based face detection during inference
+* Memory-safe preprocessing pipeline without py_function dependency
 
-Folder Structure
+---
+
+## Folder Structure
+
+```text
 project/
 │── src/
 │   ├── train.py
 │   ├── inference.py
+│
 │── models/
 │   └── efficientnetb0_fer.h5
+│
 │── data/
 │   └── fer2013.csv
+│
 │── images/
 │   └── test_image.jpg
+│
 │── README.md
 │── requirements.txt
+```
 
-Requirements
+---
 
-Install all dependencies:
+## Requirements
 
+Install dependencies using:
+
+```bash
 pip install -r requirements.txt
+```
 
+### requirements.txt
 
-Sample requirements.txt:
-
+```text
 tensorflow
 numpy
 opencv-python
 pandas
 matplotlib
+```
 
-Dataset
+---
 
-Download the FER2013 CSV file and place it under:
+## Dataset
 
+The FER2013 dataset should be placed in:
+
+```text
 data/fer2013.csv
+```
 
+This dataset contains 48x48 grayscale facial images stored as pixel values with corresponding emotion labels.
 
-This file contains pixel strings for each 48x48 emotion-labeled face.
+---
 
-Training
+## Training
 
-Run the following command from the project root:
+Run training using:
 
+```bash
 python src/train.py
+```
 
+### Output:
 
-Outputs:
+* Trained model saved at:
 
-Trained EfficientNetB0 model saved as models/efficientnetb0_fer.h5
+  ```text
+  models/efficientnetb0_fer.h5
+  ```
+* Training accuracy and validation metrics displayed
+* Automatic preprocessing and batching
 
-Printed accuracy and evaluation results
+---
 
-Automatically handles preprocessing, resizing, and batching
+## Inference on a Single Image
 
-Inference on a Single Image
+Place your test image in:
 
-Place an image under:
-
+```text
 images/my_image.jpg
+```
 
+Run inference:
 
-Run:
-
+```bash
 python src/inference.py --image images/my_image.jpg
+```
 
+### Output:
 
-Outputs:
+* Predicted emotion label
+* Confidence score
+* Optional face detection using Haarcascade
 
-Predicted emotion label
+---
 
-Probability score
+## Model Architecture
 
-Haarcascade face detection (if face present)
+* Backbone: EfficientNetB0 (ImageNet pretrained)
+* GlobalAveragePooling layer
+* Dense layer (256 units)
+* Batch Normalization
+* Dropout layer
+* Softmax output layer (7 classes)
 
-Model Architecture
+### Training Strategy:
 
-Backbone: EfficientNetB0 (ImageNet weights)
+* Stage 1: Freeze EfficientNetB0 backbone and train classifier head
+* Stage 2: Unfreeze last 50 layers for fine-tuning
+* Optimizer: Adam
+* Loss function: Sparse Categorical Crossentropy
 
-GlobalAveragePooling
+---
 
-Dense 256 + BatchNorm + Dropout
+## Troubleshooting
 
-Softmax output layer (7 classes)
+### TensorFlow errors
 
-Optimizer: Adam
+Use compatible version:
 
-Loss: SparseCategoricalCrossentropy
-
-Training workflow:
-
-Freeze EfficientNetB0 backbone
-
-Train classification head
-
-Unfreeze last 50 layers of EfficientNetB0
-
-Fine-tune entire model with low learning rate
-
-Troubleshooting
-1. TensorFlow errors
-
-Install correct TF version:
-
+```bash
 pip install tensorflow==2.13
+```
 
-2. OOM (Out of Memory)
+### Out of Memory (OOM)
 
 Reduce batch size:
 
+```python
 BATCH_SIZE = 16
+```
 
-3. No face detected during inference
+### No face detected during inference
 
-Your image may already be a cropped face.
-The script automatically classifies the whole image if no face is detected.
+If the image already contains a cropped face, the model will still perform classification without detection.
 
-4. Wrong path errors
+### Path issues
 
-Ensure all paths in train.py and inference.py are absolute or correctly relative.
+Ensure all file paths in `train.py` and `inference.py` are correctly set relative to the project root.
 
-How to Modify for Custom Use
+---
 
-Change model saving path in train.py
+## Customization
 
-Replace FER2013 with your custom CSV by keeping the same format
+* Modify model save path in `train.py`
+* Replace FER2013 with custom datasets (same format required)
+* Upgrade backbone to EfficientNetB1 or B2 for improved accuracy
+* Adjust dropout rate for regularization tuning
 
-Adjust dropout or model size
-Example: Use EfficientNetB1 or B2 for higher accuracy
+---
 
-License
+## License
 
-This project is free for educational and research use.
+This project is intended for educational and research purposes only.
+
+---
+
